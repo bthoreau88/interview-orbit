@@ -1,0 +1,72 @@
+# date: 2026-10-16T04:31:53Z
+# commit: 39d3bfbf8ca98bf2bcd3447a4bbb329e1d38f0cf
+# node: v22.22.0  os: Linux 6.18.44-fc-v139
+# command: npx vitest run --reporter=verbose
+ RUN  v5.0.5 /home/user/OVS-OS/projects/intervieworbit
+ ✓ src/architecture.test.ts > ADR-001 dependency rules > domain imports nothing from React, the router, or other layers 4ms
+ ✓ src/architecture.test.ts > ADR-001 dependency rules > persistence depends only on domain (never on UI or state) 1ms
+ ✓ src/architecture.test.ts > ADR-001 dependency rules > routes and components never import a storage adapter directly 2ms
+ ✓ src/architecture.test.ts > ADR-001 dependency rules > only the recorder layer touches MediaRecorder / getUserMedia 3ms
+ ✓ src/architecture.test.ts > ADR-001 dependency rules > no source file performs network I/O (no fetch, XHR, WebSocket, sendBeacon) 2ms
+ ✓ src/domain/sessionFactory.test.ts > createSession > keeps duration, provenance and analysis, and has no audio fields 4ms
+ ✓ src/domain/sessionFactory.test.ts > createSession > omits transcript text when the source is none 1ms
+ ✓ src/domain/sessionFactory.test.ts > createSession > caps very long transcripts 18ms
+ ✓ src/domain/sessionFactory.test.ts > isInterviewSession > rejects malformed values 0ms
+ ✓ src/domain/sessionFactory.test.ts > readStoredAnalysis > accepts current-version analyses and rejects unknown versions 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > save returns the stored copy with the same id 3ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > get returns what was saved, and null for unknown ids 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > list is newest first 7ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > remove deletes the record so get and list no longer return it 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > remove of an unknown id rejects with not-found 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > save rejects an invalid record instead of storing it 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: InMemorySessionRepository > never stores audio fields 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > save returns the stored copy with the same id 4ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > get returns what was saved, and null for unknown ids 2ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > list is newest first 4ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > remove deletes the record so get and list no longer return it 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > remove of an unknown id rejects with not-found 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > save rejects an invalid record instead of storing it 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > SessionRepository contract: IndexedDbSessionRepository > never stores audio fields 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > IndexedDbSessionRepository specifics > data survives a new repository instance on the same database (refresh) 1ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > IndexedDbSessionRepository specifics > reports unavailable when there is no IndexedDB 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > InMemorySessionRepository specifics > skips and counts malformed records 0ms
+ ✓ src/persistence/sessionRepository.contract.test.ts > InMemorySessionRepository specifics > simulated write failure stores nothing 0ms
+ ✓ src/domain/analyzer.test.ts > tokenize > ignores punctuation and keeps contractions as one word 2ms
+ ✓ src/domain/analyzer.test.ts > countFillers > normalizes repeated letters to the same filler 1ms
+ ✓ src/domain/analyzer.test.ts > countFillers > does not count ordinary words that merely contain filler letters 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - handoff fixtures > fixture 1: counts um=1 and uh=1 1ms
+ ✓ src/domain/analyzer.test.ts > analyze - handoff fixtures > fixture 2: empty text with a 20 s recording is NOT_SCORABLE, no word rate 1ms
+ ✓ src/domain/analyzer.test.ts > analyze - handoff fixtures > fixture 3: demo text alongside a real recording never yields a pace 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - rules > source none is not scorable even if text exists 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - rules > no recording means no pace 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - rules > recordings under 10 s do not get a pace 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - rules > is deterministic 0ms
+ ✓ src/domain/analyzer.test.ts > analyze - rules > raises the fast-pace tip above 170 wpm 1ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > ink on canvas 2ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on canvas 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on white 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > link ink on white 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > link ink on canvas 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > white on primary button 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > white on danger button 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > danger on danger bg 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > warning on warning bg 1ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > success on success bg 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on glass over the io-cobalt backdrop 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on glass over the io-iris backdrop 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on glass over the io-ice backdrop 0ms
+ ✓ src/styles/contrast.test.ts > token contrast (normal text >= 4.5:1) > muted ink on glass over the io-midnight backdrop 0ms
+ ✓ src/recorder/recorderState.test.ts > recorderReducer > follows idle -> requesting -> recording -> stopped 2ms
+ ✓ src/recorder/recorderState.test.ts > recorderReducer > cannot reach recording without a permission request 0ms
+ ✓ src/recorder/recorderState.test.ts > recorderReducer > ignores a stop that arrives when not recording 0ms
+ ✓ src/recorder/recorderState.test.ts > recorderReducer > allows retry after a denial 0ms
+ ✓ src/recorder/recorderState.test.ts > recorderReducer > stays unsupported no matter what happens 0ms
+ ✓ src/recorder/recorderState.test.ts > classifyMediaError > maps NotAllowedError to denied 0ms
+ ✓ src/recorder/recorderState.test.ts > classifyMediaError > maps NotFoundError to no-device 0ms
+ ✓ src/recorder/recorderState.test.ts > classifyMediaError > maps anything else to failed 0ms
+ ✓ src/recorder/recorderState.test.ts > formatClock > formats mm:ss 1ms
+ Test Files  6 passed (6)
+      Tests  62 passed (62)
+   Start at  04:31:54
+   Duration  455ms (import 43%, transform 25%, tests 24%, worker 8%)
+# exit: 0

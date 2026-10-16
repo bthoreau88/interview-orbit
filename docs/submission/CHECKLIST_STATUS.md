@@ -13,7 +13,7 @@ Branch chain: `claude/enhance-io01-…` → `io02` → `io07` → `io09` (this).
 | 00 Instructor authorization | **Not started** | Meeting with Jason Hinders; questions in `INSTRUCTOR_BRIEF` |
 | 01 Source + environment custody | **Done with limits** | Original source never found (G00 audit); app rebuilt. Runs locally on Linux; Windows run pending |
 | 02 End-to-end proof | **Done with limits** | Practice → History proven by automated test with a synthetic microphone; real-mic run pending |
-| 03 Submission proof | **Partial** | Diagrams, ADRs, tests, limitations done; walkthrough video, tagged release pending |
+| 03 Submission proof | **Partial** | Diagrams, ADRs, test report, limitations, walkthrough script done; recorded video and tagged release pending |
 
 ## P0 required vertical slice (PDF p. 3)
 
@@ -28,7 +28,7 @@ Branch chain: `claude/enhance-io01-…` → `io02` → `io07` → `io09` (this).
 | 07 | Save, list, open, delete sessions | **Done with limits** | Browser IndexedDB, not a server: ADR-001; `e2e/persistence.spec.ts` |
 | 08 | Architecture documentation | **Done** | `docs/architecture/` (context, container, 2 sequences, 3 ADRs, data contract) |
 | 09 | Accessibility + regression pass | **Partial** | Automated: axe 0 violations, contrast test, 44 px, keyboard, reduced motion, 360 px. Pending: screen reader, Edge/Firefox, Windows |
-| 10 | Demo and delivery packet | **Partial** | README done; this brief; walkthrough script next; release notes, tag and staging URL pending |
+| 10 | Demo and delivery packet | **Partial** | README, instructor brief, `TEST_REPORT.md`, `WALKTHROUGH_SCRIPT.md` done; release notes, tag, staging URL and recorded video pending |
 
 ## Screen acceptance rules (PDF p. 4)
 
@@ -69,6 +69,6 @@ Branch chain: `claude/enhance-io01-…` → `io02` → `io07` → `io09` (this).
 | 02 | README + reproducible build | **Done** | `README.md` |
 | 03 | C4/container diagram + annotated sequence | **Done** | `docs/architecture/ARCHITECTURE.md`, `diagrams/` |
 | 04 | Three ADRs + API and data contracts | **Done** | `docs/architecture/adr/`, `DATA_CONTRACT.md` (API section marked not implemented) |
-| 05 | Test matrix, defects, a11y, regression receipts | **Partial** | `docs/evidence/EVIDENCE_LEDGER.md`; consolidated test report pending |
+| 05 | Test matrix, defects, a11y, regression receipts | **Done with limits** | `TEST_REPORT.md` + raw logs in `docs/evidence/test-runs/`; manual checks (real mic, screen reader, Windows, Firefox) listed as NOT RUN |
 | 06 | Before/after UI frames + licensed asset ledger | **Partial** | "After" frames and asset licenses done; no "before" source exists. Netlify prototype screenshot could serve as "before" |
-| 07 | Narrated 2–4 minute walkthrough | **Not started** | Script next; recording is yours |
+| 07 | Narrated 2–4 minute walkthrough | **Partial** | `WALKTHROUGH_SCRIPT.md` (3:00 timed script); recording is yours |
