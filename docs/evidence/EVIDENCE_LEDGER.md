@@ -128,3 +128,36 @@ Acceptance matrix changes after G02:
 | AT-11 Review | PASS | e2e: detail matches prompt, source, transcript text, word and filler counts, duration |
 | AT-12 Delete | PASS | e2e: confirm dialog, Cancel keeps record, delete removes it, reload and direct IndexedDB lookup both empty |
 | AT-13 Service failure | PASS (simulated) | e2e: forced IndexedDB write error -> error + retry, no "Saved", nothing stored; IndexedDB absent -> errors on History and Results |
+
+## IO-07: Architecture package
+
+```text
+GATE / ISSUE: IO-07 (C4-style context/container/component views, 2 sequence diagrams, ADR-001/002/003, data contract)
+DATE / TIME: 2026-10-16
+STATUS: EVIDENCE PENDING -> awaiting human review
+SOURCE AUTHORITY: branch claude/enhance-io07-interview-orbit-architecture, stacked on G02 @ d5bfebd
+HUMAN REVIEW: IO-07 approved by owner to start. G01/G02 real-microphone check by owner: STILL NOT DONE.
+CHANGE (projects/intervieworbit only):
+  docs/architecture/ARCHITECTURE.md, DATA_CONTRACT.md, adr/ADR-001..003, diagrams/*.svg|png (4 diagrams)
+  src/architecture.test.ts (new automated dependency-rule test)
+  scripts/render-diagrams.mjs (regenerates diagrams; mermaid installed with --no-save, not a dependency)
+  README.md (architecture links)
+  No application behaviour changed.
+VERIFICATION OF THE DOCS THEMSELVES:
+  - Every file:line reference in the docs was checked against the source; two wrong references and one wrong
+    count were corrected before commit (save() is lines 86-96; 10 contrast pairs, not 11).
+  - Diagrams were rendered with Mermaid 11.17.2 in Chromium (parse + render succeeded for all 4).
+  - Rendered diagrams were reviewed visually. The container view was redrawn twice: the first version had
+    crossing edges, the second drew an IndexedDB edge through the Domain box (implying the domain touches
+    storage, which is false). The record/save sequence was corrected to show handOff(), stop() via the hook,
+    and begin(promptId, null) on the denied path, matching src/routes/Recorder.tsx:30-38.
+  - architecture.test.ts was mutation-checked: a planted domain -> react and domain -> persistence import made
+    it fail with both violations listed; removing the plant made it pass.
+TEST RECEIPT: see the IO-07 commit message / final report for exit codes of audit, tsc, vitest, build, playwright,
+              repository validator.
+KNOWN GAPS:
+  - ADRs are "Implemented, awaiting owner review"; none is instructor-reviewed.
+  - The HTTP API in DATA_CONTRACT.md section 4 is a specification only. Nothing implements it.
+  - No server tier exists; this is stated in ADR-001 as a known weakness for a Software Architecture course.
+NEXT GATE: IO-08 accessibility + regression pass (Windows clean install, Edge/Firefox, screen-reader spot check)
+```

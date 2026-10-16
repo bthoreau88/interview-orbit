@@ -39,6 +39,17 @@ the end-to-end test `AT-02/03/18`).
 Stored fields: id, promptId, createdAt, durationSeconds, transcriptSource, transcriptText (manual/demo only),
 feedbackJson (the analyzer output, versioned), status. **Audio is never stored.**
 
+## Architecture
+
+- [Architecture overview and diagrams](docs/architecture/ARCHITECTURE.md): context, containers, components,
+  two sequence flows, quality scenarios, and where the build differs from the V002 plan.
+- [Data contract](docs/architecture/DATA_CONTRACT.md): session schema, persistence port, proposed (unbuilt) HTTP API.
+- ADRs: [001 layered client + persistence port](docs/architecture/adr/ADR-001-client-modules-and-persistence-port.md),
+  [002 transcript provenance](docs/architecture/adr/ADR-002-transcript-provenance.md),
+  [003 accessible liquid material](docs/architecture/adr/ADR-003-accessible-liquid-material.md).
+- The layering is enforced by `src/architecture.test.ts` (part of `npm test`).
+- Rendered diagrams: `docs/architecture/diagrams/` (regenerate with `scripts/render-diagrams.mjs`).
+
 ## Run it
 
 Requires Node 20+ and npm. This folder is a standalone npm project; it is not part of the OVS-OS pnpm workspace.
