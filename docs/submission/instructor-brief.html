@@ -1,0 +1,223 @@
+<title>Interview Orbit Instructor Brief</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: OVS editorial document (ivory / near-black / muted olive / thin rules), one reading column, tables for status. */
+  :root {
+    --paper: #f3f1ea;
+    --ink: #17170f;
+    --muted: #55553f;
+    --olive: #5d6142;
+    --rule: #cfccbd;
+    --panel: #e6e5dc;
+    --done: #2f5d34;
+    --limits: #6b5414;
+    --open: #7a2e1f;
+    --font-display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+    --font-body: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #16170f; --ink: #ecebdf; --muted: #b9b8a3; --olive: #b7bb94; --rule: #3a3b2c; --panel: #222319;
+      --done: #8fc79a; --limits: #e1c06e; --open: #f0a08d; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #16170f; --ink: #ecebdf; --muted: #b9b8a3; --olive: #b7bb94; --rule: #3a3b2c; --panel: #222319;
+    --done: #8fc79a; --limits: #e1c06e; --open: #f0a08d; color-scheme: dark;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 15px/1.6 var(--font-body);
+  }
+  .sheet {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 32px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    gap: 28px;
+  }
+  .sheet > * { min-width: 0; }
+  .runner {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+    font: 600 11px/1.4 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--olive);
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+  }
+  h1 {
+    font: 700 clamp(40px, 9vw, 64px)/0.95 var(--font-display);
+    letter-spacing: .01em; text-transform: uppercase; margin: 0; text-wrap: balance;
+  }
+  h1 small { display: block; font-size: .62em; }
+  h2 {
+    font: 700 13px/1.3 var(--font-body); letter-spacing: .14em; text-transform: uppercase;
+    margin: 0 0 12px; color: var(--ink); text-wrap: balance;
+  }
+  p { margin: 0 0 10px; max-width: 65ch; }
+  .lede { font-size: 17px; color: var(--ink); }
+  .meta { color: var(--muted); font-size: 13px; }
+  .quote {
+    background: var(--panel); border-radius: 10px; padding: 18px 20px; margin: 0;
+  }
+  .quote p { margin: 0; }
+  .quote .meta { margin-top: 10px; }
+  ol.questions { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; counter-reset: q; }
+  ol.questions li { counter-increment: q; display: grid; grid-template-columns: 44px 1fr; gap: 4px 12px; }
+  ol.questions li::before {
+    content: "Q" counter(q); font: 600 13px/1.6 var(--font-mono); color: var(--olive);
+  }
+  ol.questions li p { grid-column: 2; margin: 0; }
+  ol.questions strong { display: block; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .fact { padding: 14px 12px 14px 0; }
+  .fact b { display: block; font: 600 26px/1.1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .fact span { font-size: 13px; color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule); }
+  th { font: 600 11px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--olive); }
+  td.n { font-family: var(--font-mono); color: var(--muted); width: 32px; font-variant-numeric: tabular-nums; }
+  .st { font: 600 12px/1.4 var(--font-mono); white-space: nowrap; }
+  .st::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: currentColor; vertical-align: 1px; }
+  .done { color: var(--done); }
+  .limits { color: var(--limits); }
+  .open { color: var(--open); }
+  ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 65ch; }
+  ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 65ch; }
+  code { font: 13px var(--font-mono); }
+  .disposition { display: flex; flex-wrap: wrap; gap: 10px 24px; font: 14px var(--font-mono); }
+  footer { border-top: 1px solid var(--rule); padding-top: 10px; font: 11px/1.5 var(--font-mono); color: var(--muted); letter-spacing: .04em; }
+  a { color: var(--olive); }
+  @media print {
+    body { font-size: 11px; line-height: 1.45; }
+    html, body { background: var(--paper); }
+    .sheet { padding: 0.45in 0.6in; gap: 10px; max-width: none; }
+    .facts { grid-template-columns: repeat(5, 1fr); }
+    .fact span { font-size: 10px; }
+    h1 { font-size: 40px; }
+    h2 { margin-bottom: 6px; }
+    .lede { font-size: 13px; }
+    .quote { padding: 10px 14px; }
+    ol.questions { gap: 6px; }
+    .fact { padding: 8px 10px 8px 0; }
+    .fact b { font-size: 20px; }
+    table { font-size: 11px; min-width: 0; }
+    th, td { padding: 4px 8px 4px 0; }
+    section { break-inside: avoid; }
+    .page-two { break-before: page; padding-top: 0.45in; }
+    .table-wrap { overflow: visible; }
+    p, ul.plain, ol.steps { max-width: none; }
+  }
+</style>
+
+<div class="sheet">
+  <div class="runner"><span>OVS / OS · Software Architecture</span><span>Interview Orbit · Instructor brief · 16 Oct 2026</span></div>
+
+  <header>
+    <h1>Interview<br><small>Orbit</small></h1>
+    <p class="lede">An individual alternative project for <strong>Software Architecture – Online</strong>, Full Sail University. Prepared for Jason Hinders by Brandon Thoreau Kelly.</p>
+    <p class="meta">Status: proposed alternative coursework. Not yet approved. This does not waive team participation, required submissions, or course policy.</p>
+  </header>
+
+  <section>
+    <h2>The request</h2>
+    <blockquote class="quote">
+      <p>I am requesting approval to complete Interview Orbit as an individual Software Architecture project because I am unable to participate consistently in the assigned team workflow. I propose a two-week deliverable consisting of a working interview-practice vertical slice, documented architecture and design decisions, a verification report, and a reproducible demo.</p>
+      <p class="meta">From the V002 project standard, p. 11. Window: 14–27 October 2026.</p>
+    </blockquote>
+  </section>
+
+  <section>
+    <h2>Decisions needed from you</h2>
+    <ol class="questions">
+      <li><strong>Can I complete this as an individual alternative?</strong><p>Approved, revise scope, or not approved.</p></li>
+      <li><strong>Which team-rubric elements still apply?</strong><p>For example peer reviews, stand-ups, or a shared repository. I will map evidence to the real rubric item by item.</p></li>
+      <li><strong>Is a client-only architecture acceptable?</strong><p>The app is a layered browser client with a storage interface. Sessions save to the browser's own database. A server API is fully specified but not built. If a running server tier is required, I will build a small API against the same contract this week.</p></li>
+      <li><strong>Submission format and date.</strong><p>Is 27 October right? Should I submit a repository link, a ZIP, or both, and a 2–4 minute recorded walkthrough?</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What exists today</h2>
+    <p>The original prototype's source code could not be recovered, so the app was rebuilt from the plan between 15 and 16 October. Everything below is in a Git repository with an append-only evidence log.</p>
+    <div class="facts">
+      <div class="fact"><b>6</b><span>screens: dashboard, practice, recorder, results, history, session detail</span></div>
+      <div class="fact"><b>8</b><span>curated interview prompts in 5 categories</span></div>
+      <div class="fact"><b>62</b><span>unit tests passing, including architecture rules</span></div>
+      <div class="fact"><b>30</b><span>end-to-end test runs passing at desktop and 360&nbsp;px</span></div>
+      <div class="fact"><b>3</b><span>ADRs, plus diagrams and a data contract</span></div>
+    </div>
+  </section>
+
+  <section class="page-two">
+    <h2>Checklist status</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>P0 item (V002, p. 3)</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td class="n">01</td><td>Source audit and clean local run</td><td><span class="st limits">With limits</span></td><td>Original source missing; rebuilt. Windows run pending</td></tr>
+          <tr><td class="n">02</td><td>App shell and design tokens</td><td><span class="st done">Done</span></td><td>Contrast checked by an automated test</td></tr>
+          <tr><td class="n">03</td><td>Prompt and practice selection</td><td><span class="st done">Done</span></td><td>8 prompts</td></tr>
+          <tr><td class="n">04</td><td>Audio recording states</td><td><span class="st limits">With limits</span></td><td>Tested with a simulated microphone; real-mic check pending</td></tr>
+          <tr><td class="n">05</td><td>Honest transcript and demo handling</td><td><span class="st done">Done</span></td><td>Typed, labelled demo, or none. No speech-to-text</td></tr>
+          <tr><td class="n">06</td><td>Deterministic feedback</td><td><span class="st done">Done</span></td><td>Formulas shown on screen; no AI scoring</td></tr>
+          <tr><td class="n">07</td><td>Save, list, open, delete</td><td><span class="st limits">With limits</span></td><td>Stored in the browser, not on a server</td></tr>
+          <tr><td class="n">08</td><td>Architecture documentation</td><td><span class="st done">Done</span></td><td>Context, container, 2 sequence diagrams, 3 ADRs</td></tr>
+          <tr><td class="n">09</td><td>Accessibility and regression pass</td><td><span class="st limits">Partial</span></td><td>Automated checks pass; manual screen-reader pass pending</td></tr>
+          <tr><td class="n">10</td><td>Demo and delivery packet</td><td><span class="st limits">Partial</span></td><td>README done; walkthrough, release and link pending</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Limits, stated up front</h2>
+    <ul class="plain">
+      <li><strong>No speech-to-text.</strong> The student types what they said, or uses a sample text that is labelled "DEMO / SAMPLE – not transcribed from this recording".</li>
+      <li><strong>No server.</strong> Saved sessions live in the browser on one device. The API is specified in the data contract and marked not implemented.</li>
+      <li><strong>Audio is never stored or uploaded.</strong> It exists only in the open tab for playback.</li>
+      <li><strong>Not deployed yet.</strong> The existing Netlify prototype is an earlier upload and is unchanged.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>90-second demonstration</h2>
+    <ol class="steps">
+      <li>Open the Dashboard and press <em>Start practice</em>.</li>
+      <li>Choose a behavioural question and allow the microphone.</li>
+      <li>Record about 20 seconds, then stop.</li>
+      <li>Type the answer and read the feedback and its formulas.</li>
+      <li>Save, refresh the browser, and reopen the session from History.</li>
+      <li>Delete it. Then deny the microphone to show the recovery screen.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Plan to 27 October</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dates</th><th>Work</th></tr></thead>
+        <tbody>
+          <tr><td>17–18 Oct</td><td>Real-microphone and Windows checks; accessibility pass; server tier if you require it</td></tr>
+          <tr><td>19–22 Oct</td><td>Visual polish and before/after frames; consolidated test report; defect log</td></tr>
+          <tr><td>23–24 Oct</td><td>Staging deployment and smoke test</td></tr>
+          <tr><td>25–26 Oct</td><td>Release candidate; record the walkthrough</td></tr>
+          <tr><td>27 Oct</td><td>Submit link, commit, documents and walkthrough</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Instructor disposition</h2>
+    <div class="disposition"><span>[ ] Approved</span><span>[ ] Revise scope</span><span>[ ] Not approved</span></div>
+    <p class="meta" style="margin-top:10px">Notes:</p>
+  </section>
+
+  <footer>Evidence: projects/intervieworbit in the OVS-OS repository · docs/submission/CHECKLIST_STATUS.md · docs/evidence/EVIDENCE_LEDGER.md</footer>
+</div>
