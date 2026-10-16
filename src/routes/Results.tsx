@@ -1,23 +1,24 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import { FeedbackView } from "../components/FeedbackView";
 import { Page } from "../components/Page";
 import { SourceBadge } from "../components/SourceBadge";
-import {
-  analyze,
-  FILLER_FLAG_PER_100,
-  FILLERS,
-  MIN_PACE_DURATION_SECONDS,
-  PACE_BAND_WPM,
-  SHORT_ANSWER_WORDS,
-} from "../domain/analyzer";
+import { analyze } from "../domain/analyzer";
 import { DEMO_TRANSCRIPT } from "../domain/demoTranscript";
 import { findPrompt } from "../domain/prompts";
 import type { TranscriptSource } from "../domain/session";
+import { createSession } from "../domain/sessionFactory";
+import { storageErrorMessage } from "../domain/sessionRepository";
 import { formatClock } from "../recorder/recorderState";
 import { useDraftSession } from "../state/DraftSession";
+import { newSessionId, useSessionRepository } from "../state/SessionRepository";
+
+type SaveState = { phase: "idle" } | { phase: "saving" } | { phase: "error"; message: string };
 
 export function Results() {
-  const { draft, setTranscript } = useDraftSession();
+  const { draft, setTranscript, markSaved } = useDraftSession();
+  const repository = useSessionRepository();
+  const [save, setSave] = useState<SaveState>({ phase: "idle" });
   const prompt = findPrompt(draft?.promptId);
 
   const analysis = useMemo(
@@ -37,21 +38,47 @@ export function Results() {
       <Page title="Nothing to review yet" eyebrow="Results">
         <div className="notice notice-info" role="status" data-testid="results-empty">
           <strong>There is no answer in progress.</strong>
-          Answers live only in this tab until saving is built, so a refresh clears them. Start a new practice answer to
-          see feedback.
+          An answer stays in this tab until you save it, so a refresh before saving clears it. Saved answers are in
+          History.
         </div>
-        <Link to="/practice" className="btn btn-primary">
-          Choose a question
-        </Link>
+        <div className="btn-row">
+          <Link to="/practice" className="btn btn-primary">
+            Choose a question
+          </Link>
+          <Link to="/history" className="btn btn-secondary">
+            Open History
+          </Link>
+        </div>
       </Page>
     );
   }
 
+  const savedId = draft.savedId;
+  const locked = save.phase === "saving" || savedId !== undefined;
   const { source, text } = draft.transcript;
   const chooseSource = (next: TranscriptSource) => {
     if (next === "demo") setTranscript({ source: "demo", text: DEMO_TRANSCRIPT });
     else if (next === "manual") setTranscript({ source: "manual", text: source === "manual" ? text : "" });
     else setTranscript({ source: "none", text: "" });
+  };
+
+  const onSave = async () => {
+    setSave({ phase: "saving" });
+    try {
+      const session = createSession({
+        id: newSessionId(),
+        now: new Date(),
+        promptId: draft.promptId,
+        durationSeconds: draft.recording?.durationSeconds ?? null,
+        transcript: draft.transcript,
+        analysis,
+      });
+      const stored = await repository.save(session);
+      markSaved(stored.id);
+      setSave({ phase: "idle" });
+    } catch (error) {
+      setSave({ phase: "error", message: storageErrorMessage(error) });
+    }
   };
 
   return (
@@ -81,7 +108,7 @@ export function Results() {
 
       <section className="glass stack" aria-labelledby="transcript-heading">
         <h2 id="transcript-heading">Transcript</h2>
-        <fieldset className="source-options">
+        <fieldset className="source-options" disabled={locked}>
           <legend className="muted" style={{ marginBottom: 8 }}>
             Where should the text come from?
           </legend>
@@ -137,11 +164,12 @@ export function Results() {
             <textarea
               id="manual-text"
               value={text}
+              readOnly={locked}
               onChange={(e) => setTranscript({ source: "manual", text: e.target.value })}
               aria-describedby="manual-help"
             />
             <p id="manual-help" className="muted">
-              Include filler words like &ldquo;um&rdquo; if you said them. This text stays in this tab.
+              Include filler words like &ldquo;um&rdquo; if you said them.
             </p>
           </div>
         )}
@@ -154,103 +182,41 @@ export function Results() {
 
       <section className="glass stack" aria-labelledby="feedback-heading" data-testid="feedback">
         <h2 id="feedback-heading">Feedback</h2>
-        {analysis.status === "not-scorable" ? (
-          <div className="notice notice-info" role="status" data-testid="not-scorable">
-            <strong>Not scorable</strong>
-            {analysis.reason} No score or word rate is shown, because there is no text to measure.
-          </div>
-        ) : (
-          <>
-            {analysis.source === "demo" && (
-              <p className="badge badge-demo">Feedback on DEMO SAMPLE text, not on your answer</p>
-            )}
-            <dl className="metrics">
-              <div className="metric">
-                <dt>Words</dt>
-                <dd data-testid="metric-words">{analysis.totalWords}</dd>
-              </div>
-              <div className="metric">
-                <dt>Filler words</dt>
-                <dd data-testid="metric-fillers">
-                  {analysis.fillerTotal}
-                  <small>
-                    {Object.entries(analysis.fillerCounts)
-                      .map(([k, v]) => `${k} ${v}`)
-                      .join(", ") || "none found"}
-                  </small>
-                </dd>
-              </div>
-              <div className="metric">
-                <dt>Fillers per 100 words</dt>
-                <dd data-testid="metric-filler-rate">{analysis.fillersPer100Words}</dd>
-              </div>
-              <div className="metric">
-                <dt>Estimated pace</dt>
-                <dd data-testid="metric-pace">
-                  {analysis.pace.status === "calculated" ? (
-                    <>
-                      {analysis.pace.wordsPerMinute}
-                      <small>words per minute</small>
-                    </>
-                  ) : (
-                    <>
-                      -<small>{analysis.pace.reason}</small>
-                    </>
-                  )}
-                </dd>
-              </div>
-            </dl>
-            <h3>Suggestions</h3>
-            {analysis.tips.length === 0 ? (
-              <p className="muted">No rule-based flags were triggered.</p>
-            ) : (
-              <ul>
-                {analysis.tips.map((t) => (
-                  <li key={t.rule}>
-                    {t.message} <span className="rule">(rule: {t.rule})</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        )}
-        <details>
-          <summary>How these numbers are calculated</summary>
-          <ul>
-            <li>Words: runs of letters or digits; punctuation ignored; &ldquo;don&apos;t&rdquo; counts as one word.</li>
-            <li>
-              Filler words: {FILLERS.map((f) => f.label).join(", ")}. Repeated letters count the same
-              (&ldquo;ummm&rdquo; = um). Words like &ldquo;like&rdquo; are not counted because they are often meaningful.
-            </li>
-            <li>Fillers per 100 words = filler words / words × 100, rounded to one decimal.</li>
-            <li>
-              Estimated pace = words / (recording seconds / 60). Calculated only for text you typed (or a live
-              transcript) with a recording of at least {MIN_PACE_DURATION_SECONDS} seconds. It is an estimate because
-              typed text may not match exactly what you said.
-            </li>
-            <li>
-              Suggestion rules: more than {FILLER_FLAG_PER_100} fillers per 100 words; fewer than {SHORT_ANSWER_WORDS}{" "}
-              words; pace outside {PACE_BAND_WPM.min}-{PACE_BAND_WPM.max} words per minute (a reference range chosen for
-              this prototype, not a research standard).
-            </li>
-            <li>There is no overall score. Nothing here uses AI.</li>
-          </ul>
-          <p className="rule">Analyzer version: {analysis.version}</p>
-        </details>
+        <FeedbackView analysis={analysis} />
       </section>
 
       <section className="glass stack" aria-labelledby="save-heading">
         <h2 id="save-heading">Save</h2>
-        <div className="notice notice-warning" data-testid="save-unavailable">
-          <strong>Saving is not built yet.</strong>
-          Saving to History is planned for the next milestone. Right now nothing on this page is stored, and a refresh
-          discards it.
+        <p className="muted" data-testid="storage-label">
+          {repository.storageLabel} Saved: the question, measured length, transcript source and text, and the feedback
+          numbers.
+        </p>
+        <div aria-live="polite">
+          {savedId !== undefined && (
+            <div className="notice notice-success" data-testid="save-success">
+              <strong>Saved</strong>
+              Stored and read back from browser storage. Reference <span className="mono">{savedId.slice(0, 8)}</span>.
+              This attempt is now read-only.
+            </div>
+          )}
+          {save.phase === "error" && (
+            <div className="notice notice-danger" role="alert" data-testid="save-error">
+              <strong>Not saved</strong>
+              {save.message} Your answer is still on this screen; you can try again.
+            </div>
+          )}
         </div>
         <div className="btn-row">
-          <button className="btn btn-secondary" disabled>
-            Save session (coming next)
-          </button>
-          <Link to="/practice" className="btn btn-primary">
+          {savedId !== undefined ? (
+            <Link to={`/history/${savedId}`} className="btn btn-primary">
+              Open in History
+            </Link>
+          ) : (
+            <button className="btn btn-primary" onClick={onSave} disabled={save.phase === "saving"}>
+              {save.phase === "saving" ? "Saving..." : save.phase === "error" ? "Try saving again" : "Save session"}
+            </button>
+          )}
+          <Link to="/practice" className="btn btn-secondary">
             Practice another question
           </Link>
         </div>

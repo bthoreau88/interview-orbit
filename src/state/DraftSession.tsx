@@ -3,18 +3,21 @@ import type { LocalRecording, Transcript } from "../domain/session";
 
 /**
  * The in-progress practice attempt. Memory only: a refresh discards it.
- * Persistence (save/list/open/delete) is the next gate (G02).
+ * Saving copies it into the session repository; the audio is never part of that copy.
  */
 export interface DraftSession {
   promptId: string;
   recording: LocalRecording | null;
   transcript: Transcript;
+  /** Set once this attempt has been saved; the attempt is then read-only. */
+  savedId?: string;
 }
 
 interface DraftContextValue {
   draft: DraftSession | null;
   begin: (promptId: string, recording: LocalRecording | null) => void;
   setTranscript: (transcript: Transcript) => void;
+  markSaved: (id: string) => void;
   clear: () => void;
 }
 
@@ -38,7 +41,11 @@ export function DraftSessionProvider({ children }: { children: ReactNode }) {
   );
 
   const setTranscript = useCallback((transcript: Transcript) => {
-    setDraft((d) => (d ? { ...d, transcript } : d));
+    setDraft((d) => (d && !d.savedId ? { ...d, transcript } : d));
+  }, []);
+
+  const markSaved = useCallback((id: string) => {
+    setDraft((d) => (d ? { ...d, savedId: id } : d));
   }, []);
 
   const clear = useCallback(() => {
@@ -48,7 +55,7 @@ export function DraftSessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => () => replaceUrl(null), [replaceUrl]);
 
-  const value = useMemo(() => ({ draft, begin, setTranscript, clear }), [draft, begin, setTranscript, clear]);
+  const value = useMemo(() => ({ draft, begin, setTranscript, markSaved, clear }), [draft, begin, setTranscript, markSaved, clear]);
   return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>;
 }
 

@@ -531,3 +531,33 @@ details summary {
   font-size: 0.8125rem;
   color: var(--io-ink-muted);
 }
+
+/* ---------- Confirm dialog ---------- */
+.dialog,
+.stack > .dialog {
+  margin: auto;
+  max-width: min(92vw, 440px);
+  color: var(--io-ink);
+  background: var(--io-glass-strong);
+}
+.dialog::backdrop {
+  background: rgba(17, 25, 44, 0.45);
+}
+.recent-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--io-space-1);
+  min-height: var(--io-target);
+  padding: var(--io-space-3);
+  border-radius: var(--io-radius-sm);
+  background: #ffffff;
+  border: 1px solid rgba(17, 25, 44, 0.1);
+  color: var(--io-ink);
+  text-decoration: none;
+}
+.recent-link:hover {
+  border-color: var(--io-cobalt-deep);
+}
+.recent-link .eyebrow {
+  margin: 0;
+}

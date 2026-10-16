@@ -1,9 +1,12 @@
 import { Link } from "react-router";
 import { OrbitWordmark } from "../components/OrbitWordmark";
 import { Page } from "../components/Page";
-import { PROMPTS } from "../domain/prompts";
+import { findPrompt, PROMPTS } from "../domain/prompts";
+import { formatWhen, SessionSummary, useSessionList } from "./History";
 
 export function Dashboard() {
+  const { state } = useSessionList();
+
   return (
     <Page title="Your next interview starts here." eyebrow="Ready to practice">
       <div className="grid">
@@ -29,12 +32,36 @@ export function Dashboard() {
             </p>
             <p className="muted">curated prompts available</p>
           </section>
-          <section className="glass" aria-labelledby="recent-heading">
+          <section className="glass stack" aria-labelledby="recent-heading" data-testid="recent">
             <h2 id="recent-heading">Recent sessions</h2>
-            <p className="muted" data-testid="recent-empty">
-              No saved sessions yet. Saving to History is not built yet, so nothing is stored. It is planned for the next
-              milestone.
-            </p>
+            {state.phase === "loading" && <p className="muted">Loading...</p>}
+            {state.phase === "error" && (
+              <p className="notice notice-danger" role="alert">
+                <strong>Saved sessions could not be loaded.</strong>
+                {state.message}
+              </p>
+            )}
+            {state.phase === "ready" && state.value.sessions.length === 0 && (
+              <p className="muted" data-testid="recent-empty">
+                No saved sessions yet. Save an answer from the Results screen and it will appear here.
+              </p>
+            )}
+            {state.phase === "ready" && state.value.sessions.length > 0 && (
+              <>
+                <ul className="prompt-list stack">
+                  {state.value.sessions.slice(0, 3).map((s) => (
+                    <li key={s.id}>
+                      <Link to={`/history/${s.id}`} className="recent-link">
+                        <span className="eyebrow">{formatWhen(s.createdAt)}</span>
+                        <span>{findPrompt(s.promptId)?.text ?? `Unknown question (${s.promptId})`}</span>
+                        <SessionSummary session={s} />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/history">See all {state.value.sessions.length} in History</Link>
+              </>
+            )}
           </section>
         </div>
       </div>

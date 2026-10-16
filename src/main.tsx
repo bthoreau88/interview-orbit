@@ -16,26 +16,31 @@ import { History, NotFound } from "./routes/History";
 import { Practice } from "./routes/Practice";
 import { Recorder } from "./routes/Recorder";
 import { Results } from "./routes/Results";
+import { SessionDetail } from "./routes/SessionDetail";
 import { DraftSessionProvider } from "./state/DraftSession";
+import { SessionRepositoryProvider } from "./state/SessionRepository";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root element missing");
 
 createRoot(root).render(
   <StrictMode>
-    <DraftSessionProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppShell />}>
-            <Route index element={<Dashboard />} />
-            <Route path="practice" element={<Practice />} />
-            <Route path="record/:promptId" element={<Recorder />} />
-            <Route path="results" element={<Results />} />
-            <Route path="history" element={<History />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </DraftSessionProvider>
+    <SessionRepositoryProvider>
+      <DraftSessionProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route index element={<Dashboard />} />
+              <Route path="practice" element={<Practice />} />
+              <Route path="record/:promptId" element={<Recorder />} />
+              <Route path="results" element={<Results />} />
+              <Route path="history" element={<History />} />
+              <Route path="history/:sessionId" element={<SessionDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </DraftSessionProvider>
+    </SessionRepositoryProvider>
   </StrictMode>,
 );

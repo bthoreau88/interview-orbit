@@ -42,6 +42,7 @@ describe("token contrast (normal text >= 4.5:1)", () => {
     ["link ink on white", rgb(token("io-cobalt-deep")), WHITE],
     ["link ink on canvas", rgb(token("io-cobalt-deep")), rgb(token("io-cloud"))],
     ["white on primary button", WHITE, rgb(token("io-cobalt"))],
+    ["white on danger button", WHITE, rgb(token("io-danger"))],
     ["danger on danger bg", rgb(token("io-danger")), rgb(token("io-danger-bg"))],
     ["warning on warning bg", rgb(token("io-warning-ink")), rgb(token("io-warning-bg"))],
     ["success on success bg", rgb(token("io-success-ink")), rgb(token("io-success-bg"))],

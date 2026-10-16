@@ -2,7 +2,7 @@
 
 Interview-practice web app: choose a question, record an answer, review transparent rule-based feedback.
 
-**Status: G01 core-journey slice, client-only local prototype.** Built new in October 2026 because no earlier
+**Status: G02 slice (core journey + browser-local persistence), client-only prototype.** Built new in October 2026 because no earlier
 source code could be found (see `docs/evidence/EVIDENCE_LEDGER.md`, G00). It is not the code behind
 `interview-orbit-prototype.netlify.app`, and nothing here has been deployed.
 
@@ -10,15 +10,18 @@ source code could be found (see `docs/evidence/EVIDENCE_LEDGER.md`, G00). It is 
 
 | Screen | Route | State |
 |---|---|---|
-| Dashboard | `/` | Start CTA, prompt count, honest "no saved sessions" empty state |
+| Dashboard | `/` | Start CTA, prompt count, three most recent saved sessions or empty state |
 | Practice | `/practice` | 8 curated prompts, category filter |
 | Recorder | `/record/:promptId` | Consent notice, mic permission (grant / deny / no device), timer, stop, retry, cancel, 3-minute cap, unsupported-browser path |
-| Results | `/results` | Transcript source (manual / demo / none; live is disabled), deterministic metrics with formulas |
-| History | `/history` | Empty state only |
+| Results | `/results` | Transcript source (manual / demo / none; live is disabled), deterministic metrics with formulas, Save (confirmed by read-back) |
+| History | `/history` | Saved sessions, newest first; loading, empty, error and unreadable-record states |
+| Session detail | `/history/:id` | Exact saved session with provenance and metrics; delete with confirmation |
 
 ## Not built yet
 
-- **Saving / History persistence (G02).** Nothing is stored. A refresh discards the current attempt.
+- **Server persistence.** Sessions are stored in this browser's IndexedDB only. They survive a page refresh
+  (tested). IndexedDB is also designed to persist across browser restarts on the same device and profile, but that
+  was not tested separately. Data does not sync, and clearing site data deletes it.
 - **Live speech-to-text.** Deliberately absent. Browser speech services can send audio to a third party.
 - No accounts, AI grading, video, or backend of any kind.
 
@@ -27,6 +30,14 @@ source code could be found (see `docs/evidence/EVIDENCE_LEDGER.md`, G00). It is 
 The microphone opens only after **Start recording**. Audio exists only as an in-memory Blob URL for playback and
 is revoked on retry, cancel, leaving the attempt, or refresh. No network request carries audio or text (checked by
 the end-to-end test `AT-02/03/18`).
+
+## Storage
+
+`src/domain/sessionRepository.ts` defines the persistence port (`save`, `list`, `get`, `remove`).
+`src/persistence/indexedDbSessionRepository.ts` is the shipped adapter (database `interview-orbit`, store
+`sessions`, key `id`). `save` resolves only after the transaction commits **and** the record reads back.
+Stored fields: id, promptId, createdAt, durationSeconds, transcriptSource, transcriptText (manual/demo only),
+feedbackJson (the analyzer output, versioned), status. **Audio is never stored.**
 
 ## Run it
 
@@ -61,7 +72,8 @@ Defined in `src/domain/analyzer.ts` (version `io-analyzer/1`) and shown on the R
 src/
   domain/     prompts, session types, analyzer (pure, unit-tested)
   recorder/   recorder state machine (pure) + useRecorder hook (MediaRecorder side effects)
-  state/      in-memory draft session (React context)
+  persistence/ IndexedDB adapter + in-memory test adapter, shared contract tests
+  state/      in-memory draft session, repository provider (React context)
   routes/     the five screens
   components/ app shell, wordmark, page wrapper, source badge
   styles/     design tokens + material CSS, contrast test
