@@ -1,0 +1,66 @@
+/*
+ * Interview Orbit design tokens (ADR-003 draft: accessible liquid material).
+ * Contrast pairs used for text are checked in src/styles/contrast.test.ts.
+ */
+:root {
+  /* Brand */
+  --io-cloud: #f7f8fb;
+  --io-midnight: #11192c;
+  --io-cobalt: #316af2;
+  --io-cobalt-deep: #1f4fc4; /* text/links on light surfaces */
+  --io-iris: #8c68df;
+  --io-ice: #a4e9ed;
+
+  /* Roles */
+  --io-bg: var(--io-cloud);
+  --io-ink: var(--io-midnight);
+  --io-ink-muted: #47506a;
+  --io-accent: var(--io-cobalt);
+  --io-accent-ink: var(--io-cobalt-deep);
+  --io-on-accent: #ffffff;
+  --io-danger: #b42318;
+  --io-danger-bg: #fdecea;
+  --io-warning-ink: #6b3d00;
+  --io-warning-bg: #fff3d6;
+  --io-success-ink: #0f6b3a;
+  --io-success-bg: #e3f6ea;
+
+  /* Material: glass is >= 88% opaque behind any text (requirement: >= 85%). */
+  --io-glass: rgba(255, 255, 255, 0.88);
+  --io-glass-strong: rgba(255, 255, 255, 0.96);
+  --io-glass-border: rgba(255, 255, 255, 0.75);
+  --io-glass-edge: rgba(17, 25, 44, 0.08);
+  --io-glass-blur: 16px;
+  --io-shadow: 0 1px 2px rgba(17, 25, 44, 0.06), 0 12px 32px -12px rgba(49, 106, 242, 0.25);
+
+  /* Type */
+  --io-font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --io-font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --io-font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  /* Shape and spacing */
+  --io-radius-sm: 10px;
+  --io-radius: 18px;
+  --io-radius-pill: 999px;
+  --io-space-1: 4px;
+  --io-space-2: 8px;
+  --io-space-3: 12px;
+  --io-space-4: 16px;
+  --io-space-5: 24px;
+  --io-space-6: 32px;
+  --io-space-7: 48px;
+  --io-target: 44px;
+
+  /* Focus */
+  --io-focus-ring: 0 0 0 3px var(--io-cloud), 0 0 0 6px var(--io-cobalt-deep);
+
+  /* Motion */
+  --io-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --io-dur: 160ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --io-dur: 0ms;
+  }
+}
