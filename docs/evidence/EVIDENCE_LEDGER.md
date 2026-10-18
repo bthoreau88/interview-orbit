@@ -161,3 +161,22 @@ KNOWN GAPS:
   - No server tier exists; this is stated in ADR-001 as a known weakness for a Software Architecture course.
 NEXT GATE: IO-08 accessibility + regression pass (Windows clean install, Edge/Firefox, screen-reader spot check)
 ```
+
+## IO-09: Delivery packet (instructor meeting moved to 2026-10-18, 1 pm)
+
+```text
+GATE / ISSUE: IO-09 partial (instructor brief, checklist status, test report, walkthrough script, backup demo video)
+DATE / TIME: 2026-10-16 to 2026-10-18
+STATUS: EVIDENCE PENDING -> awaiting human review
+SOURCE AUTHORITY: branch claude/enhance-io09-interview-orbit-delivery, stacked on IO-07 @ f34f470
+CHANGE: docs/submission/* (brief HTML + PDF, CHECKLIST_STATUS, TEST_REPORT, WALKTHROUGH_SCRIPT, demo/backup-demo-simulated-mic.webm),
+        docs/evidence/test-runs/2026-10-16-*.txt, scripts/record-backup-demo.mjs. No application code changed.
+BACKUP VIDEO: 50.8 s, 1280x760 VP8 WebM, recorded with Chromium's synthetic microphone; every frame carries the label
+              "BACKUP RECORDING · automated run · simulated microphone · not a live demo". It is NOT the submission walkthrough
+              and NOT a real-microphone receipt.
+PROCESS GAP (recorded at owner's request for transparency): the Codex handoff recommended returning the G00 findings to
+  ChatGPT for an independent architecture and scope review before implementation. That review did not happen; the owner
+  approved G01 directly. The handoff ZIP was extracted to a session scratch folder only and is not in the repository.
+KNOWN GAPS: real-mic receipt, Windows clean install, screen-reader pass, Firefox, staging deploy, tag, recorded walkthrough.
+HUMAN REVIEW: NO DECISION YET
+```
