@@ -43,10 +43,9 @@ Interview Orbit is not deployed yet. To use it on your own computer:
 
 1. Install **Node.js 22.12 or newer** from <https://nodejs.org> (the LTS version is fine).
 2. Download or clone this repository.
-3. In a terminal:
+3. In a terminal, from the repository folder:
 
    ```bash
-   cd projects/intervieworbit
    npm ci
    npm run dev
    ```
@@ -57,11 +56,10 @@ Your saved sessions are stored in that browser on that computer only.
 
 ## Development setup
 
-Requirements: Node.js **22.12+** (required by Vitest 5; Vite 8 needs 20.19+ or 22.12+) and npm. This folder is a
-standalone npm project; it is not part of the OVS-OS pnpm workspace.
+Requirements: Node.js **22.12+** (required by Vitest 5; Vite 8 needs 20.19+ or 22.12+) and npm. Run all commands from
+the repository root.
 
 ```bash
-cd projects/intervieworbit
 npm ci                # install exact dependency versions from package-lock.json
 npm run dev           # development server at http://localhost:5173
 npm run typecheck     # TypeScript check, no output files
