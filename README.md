@@ -140,3 +140,12 @@ Known issues and gaps (October 2026):
 1. Real-microphone and Windows testing.
 2. Server API for saved sessions, if required by the course.
 3. Recorded walkthrough.
+
+License
+MIT — see details here if needed; free to use, modify, and learn from.
+
+Contributors
+Brandon Kelly (bthoreau88) — sole developer. Built originally for Project & Portfolio IV (COS349), continued independently for Software Architecture (SDV4327-O).
+
+Project Status
+Beta. Core flow (record → transcribe → feedback → save → review history) is complete and tested (33/33 passing). Actively extending: richer speech-to-text integration and an expanded prompt library are in progress.
