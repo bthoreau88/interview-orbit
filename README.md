@@ -63,7 +63,7 @@ the repository root.
 npm ci                # install exact dependency versions from package-lock.json
 npm run dev           # development server at http://localhost:5173
 npm run typecheck     # TypeScript check, no output files
-npm test              # 62 unit, contract and architecture tests
+npm test              # unit, contract and architecture tests
 npm run build         # typecheck + production build into dist/
 npm run test:e2e      # Playwright end-to-end tests at 1280 px and 360 px
 npm run preview       # serve the production build at http://localhost:4173
@@ -128,16 +128,15 @@ save → reopen from History → delete.
 
 Known issues and gaps (October 2026):
 
-- **Known bug:** if you leave the Recorder while the browser's microphone prompt is still open and then click
-  Allow, recording starts in the background. A fix with a regression test is scheduled. Until then, answer the
-  microphone prompt before leaving the screen.
+- **Fixed (IO-10):** leaving the Recorder while the browser's microphone prompt was open, then clicking Allow, used
+  to start a recording in the background. The late permission is now discarded and its microphone stream stopped;
+  three regression tests in `e2e/journey.spec.ts` cover it.
 - Recording has been tested with a simulated microphone only; real-microphone testing is pending.
 - No live speech-to-text: you type what you said, or use a clearly labelled demo sample.
 - No server: sessions are stored in the browser only. A server API is specified in the data contract but not built.
 
 ## Roadmap
 
-1. Fix the microphone permission bug above, with a regression test.
-2. Real-microphone and Windows testing.
-3. Server API for saved sessions, if required by the course.
-4. Staging deployment and a recorded walkthrough.
+1. Real-microphone and Windows testing.
+2. Server API for saved sessions, if required by the course.
+3. Recorded walkthrough.

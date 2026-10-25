@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { readdirSync, readFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -9,7 +10,9 @@ import { describe, expect, it } from "vitest";
  * The domain layer must stay framework-free and storage-free so it can be reused
  * behind a future HTTP API without change.
  */
-const SRC = new URL(".", import.meta.url).pathname;
+const SRC = fileURLToPath(new URL(".", import.meta.url));
+/** Path relative to src/ with forward slashes on every OS (Windows returns backslashes). */
+const rel = (file: string) => relative(SRC, file).split(sep).join("/");
 
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -25,7 +28,7 @@ function importsOf(file: string): string[] {
 }
 
 function layerFiles(layer: string) {
-  return sourceFiles(join(SRC, layer)).map((file) => ({ file: relative(SRC, file), imports: importsOf(file) }));
+  return sourceFiles(join(SRC, layer)).map((file) => ({ file: rel(file), imports: importsOf(file) }));
 }
 
 describe("ADR-001 dependency rules", () => {
@@ -54,16 +57,16 @@ describe("ADR-001 dependency rules", () => {
 
   it("only the recorder layer touches MediaRecorder / getUserMedia", () => {
     const offenders = sourceFiles(SRC)
-      .filter((f) => !relative(SRC, f).startsWith("recorder/"))
+      .filter((f) => !rel(f).startsWith("recorder/"))
       .filter((f) => /getUserMedia|new MediaRecorder/.test(readFileSync(f, "utf8")))
-      .map((f) => relative(SRC, f));
+      .map((f) => rel(f));
     expect(offenders).toEqual([]);
   });
 
   it("no source file performs network I/O (no fetch, XHR, WebSocket, sendBeacon)", () => {
     const offenders = sourceFiles(SRC)
       .filter((f) => /\bfetch\(|XMLHttpRequest|new WebSocket|sendBeacon/.test(readFileSync(f, "utf8")))
-      .map((f) => relative(SRC, f));
+      .map((f) => rel(f));
     expect(offenders).toEqual([]);
   });
 });

@@ -1,13 +1,15 @@
 // Renders the Mermaid diagrams in docs/architecture/ARCHITECTURE.md to SVG + PNG in docs/architecture/diagrams/.
-// Mermaid is not a project dependency (it is only needed for docs). Usage, from projects/intervieworbit:
+// Mermaid is not a project dependency (it is only needed for docs). Usage, from the repository root:
 //   npm install --no-save mermaid@11
 //   PW_CHROMIUM_PATH=/path/to/chrome node scripts/render-diagrams.mjs
 import { readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-const root = new URL("..", import.meta.url).pathname;
-const mdPath = `${root}docs/architecture/ARCHITECTURE.md`;
-const outDir = `${root}docs/architecture/diagrams`;
-const require = createRequire(`${root}package.json`);
+import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+const root = fileURLToPath(new URL("..", import.meta.url));
+const mdPath = join(root, "docs", "architecture", "ARCHITECTURE.md");
+const outDir = join(root, "docs", "architecture", "diagrams");
+const require = createRequire(join(root, "package.json"));
 const mermaidJs = require.resolve("mermaid/dist/mermaid.min.js");
 const { chromium } = require("@playwright/test");
 const md = readFileSync(mdPath, "utf8");

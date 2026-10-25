@@ -196,3 +196,81 @@ test("AT-16 reduced motion disables decorative animation", async ({ page }) => {
   const name = await page.locator(".atmosphere span").first().evaluate((el) => getComputedStyle(el).animationName);
   expect(name).toBe("none");
 });
+
+/**
+ * IO-10 regression: a permission prompt answered after the user left the Recorder must not start recording.
+ * getUserMedia is held open until the test releases it, as if the user clicked "Allow" late.
+ */
+async function holdPermission(page: Page) {
+  await page.addInitScript(() => {
+    const real = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    const w = window as unknown as {
+      __streams: MediaStream[];
+      __recorderStarts: number;
+      __release: () => Promise<void>;
+    };
+    w.__streams = [];
+    w.__recorderStarts = 0;
+    navigator.mediaDevices.getUserMedia = (constraints) =>
+      new Promise((resolve) => {
+        w.__release = async () => {
+          const stream = await real(constraints);
+          w.__streams.push(stream);
+          resolve(stream);
+        };
+      });
+    const RealRecorder = window.MediaRecorder;
+    window.MediaRecorder = class extends RealRecorder {
+      start(timeslice?: number) {
+        w.__recorderStarts += 1;
+        super.start(timeslice);
+      }
+    };
+  });
+}
+
+async function micActivityAfterRelease(page: Page) {
+  await page.evaluate(() => (window as unknown as { __release: () => Promise<void> }).__release());
+  await page.waitForTimeout(750);
+  return page.evaluate(() => {
+    const w = window as unknown as { __streams: MediaStream[]; __recorderStarts: number };
+    return {
+      recorderStarts: w.__recorderStarts,
+      liveTracks: w.__streams.flatMap((s) => s.getTracks()).filter((t) => t.readyState === "live").length,
+    };
+  });
+}
+
+test("IO-10 late permission after 'Skip recording' never records", async ({ page }) => {
+  await holdPermission(page);
+  await page.goto("/record/beh-challenge");
+  await page.getByRole("button", { name: "Start recording" }).click();
+  await page.getByRole("button", { name: "Skip recording, type my answer" }).click();
+  await expect(page).toHaveURL(/\/results$/);
+  expect(await micActivityAfterRelease(page)).toEqual({ recorderStarts: 0, liveTracks: 0 });
+});
+
+test("IO-10 late permission after leaving via navigation never records", async ({ page }) => {
+  await holdPermission(page);
+  await page.goto("/record/beh-challenge");
+  await page.getByRole("button", { name: "Start recording" }).click();
+  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "History" }).click();
+  await expect(page).toHaveURL(/\/history$/);
+  expect(await micActivityAfterRelease(page)).toEqual({ recorderStarts: 0, liveTracks: 0 });
+});
+
+test("IO-10 normal permission still records after the fix", async ({ page }) => {
+  await holdPermission(page);
+  await page.goto("/record/beh-challenge");
+  await page.getByRole("button", { name: "Start recording" }).click();
+  await page.evaluate(() => (window as unknown as { __release: () => Promise<void> }).__release());
+  await expect(page.getByText("Recording - microphone on")).toBeVisible();
+  await page.getByRole("button", { name: "Stop recording" }).click();
+  await expect(page.getByText(/Recording captured/)).toBeVisible();
+  const live = await page.evaluate(() =>
+    (window as unknown as { __streams: MediaStream[] }).__streams
+      .flatMap((s) => s.getTracks())
+      .filter((t) => t.readyState === "live").length,
+  );
+  expect(live).toBe(0);
+});

@@ -26,6 +26,12 @@ export function useRecorder() {
   const startedAtRef = useRef(0);
   const ownedUrlRef = useRef<string | null>(null);
   const discardRef = useRef(false);
+  /**
+   * Incremented by every start(), reset() and unmount. A permission request that resolves after its generation
+   * has moved on belongs to an abandoned attempt: its stream is stopped and nothing is recorded.
+   */
+  const generationRef = useRef(0);
+  const mountedRef = useRef(false);
 
   const releaseStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -38,13 +44,20 @@ export function useRecorder() {
   }, []);
 
   const start = useCallback(async () => {
+    const generation = ++generationRef.current;
+    const abandoned = () => generation !== generationRef.current || !mountedRef.current;
     revokeOwnedUrl();
     dispatch({ type: "request" });
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (error) {
-      dispatch({ type: "failed", ...classifyMediaError(error) });
+      if (!abandoned()) dispatch({ type: "failed", ...classifyMediaError(error) });
+      return;
+    }
+    if (abandoned()) {
+      // The user left or cancelled while the browser's permission prompt was open.
+      stream.getTracks().forEach((t) => t.stop());
       return;
     }
     try {
@@ -82,6 +95,7 @@ export function useRecorder() {
 
   /** Discards any recording (in progress or finished) and returns to idle. */
   const reset = useCallback(() => {
+    generationRef.current += 1;
     discardRef.current = true;
     if (recorderRef.current?.state === "recording") recorderRef.current.stop();
     recorderRef.current = null;
@@ -112,15 +126,17 @@ export function useRecorder() {
   }, [state.phase, stop]);
 
   // Leaving the screen always turns the microphone off and frees un-handed-off audio.
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      generationRef.current += 1;
       discardRef.current = true;
       if (recorderRef.current?.state === "recording") recorderRef.current.stop();
       streamRef.current?.getTracks().forEach((t) => t.stop());
       if (ownedUrlRef.current) URL.revokeObjectURL(ownedUrlRef.current);
-    },
-    [],
-  );
+    };
+  }, []);
 
   return { state, elapsed, start, stop, reset, handOff };
 }

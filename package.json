@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
   "description": "Interview Orbit - interview practice web app (client-only P0 prototype).",
   "scripts": {
     "dev": "vite",

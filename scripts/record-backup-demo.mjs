@@ -1,6 +1,6 @@
 // Records docs/submission/demo/backup-demo-simulated-mic.webm: an automated run of the full journey with a
 // synthetic microphone, visibly labelled as such. A fallback for live demos, never a substitute for a real-mic receipt.
-// Usage (from projects/intervieworbit): npm run build && node scripts/record-backup-demo.mjs "$PWD" "$PWD/docs/submission/demo/backup-demo-simulated-mic.webm"
+// Usage (from the repository root): npm run build && node scripts/record-backup-demo.mjs "$PWD" "$PWD/docs/submission/demo/backup-demo-simulated-mic.webm"
 import { spawn } from "node:child_process";
 import { renameSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";

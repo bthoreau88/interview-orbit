@@ -180,3 +180,23 @@ PROCESS GAP (recorded at owner's request for transparency): the Codex handoff re
 KNOWN GAPS: real-mic receipt, Windows clean install, screen-reader pass, Firefox, staging deploy, tag, recorded walkthrough.
 HUMAN REVIEW: NO DECISION YET
 ```
+
+## IO-10: Microphone lifecycle fix and Windows portability (2026-10-25)
+
+```text
+GATE / ISSUE: IO-10 (owner instruction: "Claude do IO-10")
+DATE / TIME: 2026-10-24 PDT
+STATUS: PASS (automated) -> awaiting owner review
+SOURCE AUTHORITY: github.com/bthoreau88/interview-orbit, main (standalone export of the OVS-OS project folder)
+BEFORE: leaving the Recorder while the permission prompt was open, then granting permission, started a hidden
+        recording. Reproduced: {"recorderStarts":1,"liveTracks":1} after navigating to /results.
+CHANGE: src/recorder/useRecorder.ts (generation counter + mounted flag; a late stream is stopped, no MediaRecorder
+        is created, no state update); src/architecture.test.ts and scripts/render-diagrams.mjs (fileURLToPath and
+        forward-slash relative paths for Windows); package.json engines node >=22.12; README status updated;
+        e2e/journey.spec.ts: 3 IO-10 regression tests.
+TEST RECEIPT (Linux, Node v22.22.0, Chromium 1194 synthetic mic):
+  IO-10 tests against the OLD recorder: both race tests FAIL (recorderStarts 1, liveTracks 1), as expected
+  IO-10 tests against the FIXED recorder: 6/6 pass (3 tests x desktop + 360 px)
+  npm audit 0 | tsc exit 0 | vitest 62/62 | build exit 0 | playwright 36/36
+KNOWN GAPS: Windows execution of the path fix NOT RUN (no Windows machine reachable); real microphone NOT RUN.
+```
