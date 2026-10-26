@@ -1,9 +1,11 @@
 # Interview Orbit: Test Report
 
-Run: 2026-10-16, commit `39d3bfb` (branch `claude/enhance-io09-interview-orbit-delivery`).
+Latest run: 2026-10-25, `github.com/bthoreau88/interview-orbit` at `a3c002b` plus the README/LICENSE corrections.
+Earlier run: 2026-10-16 (before the IO-10 fix); its logs are kept for history.
 Environment: Linux container, Node v22.22.0, Chromium build 1194 via Playwright 1.55.1 with a **synthetic
 microphone** (`--use-fake-device-for-media-stream`).
-Raw logs: [`unit`](../evidence/test-runs/2026-10-16-unit.txt) · [`e2e`](../evidence/test-runs/2026-10-16-e2e.txt).
+Raw logs: [`unit 2026-10-25`](../evidence/test-runs/2026-10-25-unit.txt) · [`e2e 2026-10-25`](../evidence/test-runs/2026-10-25-e2e.txt)
+· earlier: [`unit 2026-10-16`](../evidence/test-runs/2026-10-16-unit.txt) · [`e2e 2026-10-16`](../evidence/test-runs/2026-10-16-e2e.txt).
 
 ## Summary
 
@@ -11,8 +13,8 @@ Raw logs: [`unit`](../evidence/test-runs/2026-10-16-unit.txt) · [`e2e`](../evid
 |---|---|---|
 | Typecheck | `npx tsc --noEmit` | exit 0 |
 | Unit + contract + architecture | `npx vitest run` | **62 / 62 passed**, 6 files |
-| End-to-end, desktop 1280 px | `npx playwright test` | **15 / 15 passed** |
-| End-to-end, mobile 360 px | `npx playwright test` | **15 / 15 passed** |
+| End-to-end, desktop 1280 px | `npx playwright test` | **18 / 18 passed** |
+| End-to-end, mobile 360 px | `npx playwright test` | **18 / 18 passed** |
 | Dependency audit | `npm audit` | 0 vulnerabilities |
 | Production build | `npm run build` | exit 0 |
 
@@ -45,6 +47,7 @@ Status words: **PASS** (automated test passed), **PASS (simulated)** (passed wit
 | AT-16 | Reduced motion | PASS | `journey.spec.ts` AT-16 |
 | AT-17 | Clean install and build | PASS on Linux; **NOT RUN on Windows** | `npm ci && npm run build` |
 | AT-18 | Mic only after action; nothing uploaded | PASS | `journey.spec.ts` (getUserMedia call count; same-origin GET only) |
+| IO-10 | Late permission after leaving the Recorder never records | PASS | `journey.spec.ts` IO-10 ×3 (fail on the pre-fix code, pass now) |
 | AT-19 | No secrets | PASS | no env vars in app; repository secret scan |
 | AT-20 | Deploy gate | PASS (nothing deployed) | Netlify production untouched |
 
@@ -69,5 +72,6 @@ Status words: **PASS** (automated test passed), **PASS (simulated)** (passed wit
 | G02 | Delete dialog focused "Yes, delete" by default | e2e AT-12 | Focus moved to Cancel explicitly |
 | G02 | Delete dialog top-aligned | Screenshot review | Dialog margin fixed |
 | IO-07 | Architecture docs: 2 wrong line references, 1 wrong count, a misleading diagram edge | Doc review | Corrected before commit |
+| IO-10 | **Hidden recording:** leaving the Recorder during the permission prompt, then allowing, started recording in the background | Independent review + reproduction script | Generation guard in `useRecorder.ts`; commit `bcc98f6` |
 
 No open defects are known. That reflects automated coverage only; the manual checks above may find more.

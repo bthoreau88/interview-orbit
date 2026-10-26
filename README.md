@@ -93,6 +93,7 @@ Architecture documents: [overview and diagrams](docs/architecture/ARCHITECTURE.m
 [ADR-002](docs/architecture/adr/ADR-002-transcript-provenance.md) (honest transcript sources),
 [ADR-003](docs/architecture/adr/ADR-003-accessible-liquid-material.md) (accessible glass design).
 The layering rules are enforced by `src/architecture.test.ts`, which runs with `npm test`.
+[Quality attribute traceability](docs/architecture/QUALITY_TRACEABILITY.md) maps each requirement to its code and tests.
 
 ### How the feedback is calculated
 
@@ -107,24 +108,25 @@ Defined in `src/domain/analyzer.ts` (version `io-analyzer/1`):
 
 ## License
 
-**To be decided by the project owner before publication.** MIT is the suggested default for a portfolio project.
-Until a `LICENSE` file is added, all rights are reserved by the author.
+MIT. See [`LICENSE`](LICENSE). Free to use, modify, and learn from.
 
 Third-party assets: fonts under SIL OFL 1.1; the ORBIT wordmark is an original SVG
 (`src/components/OrbitWordmark.tsx`); no third-party UI code snippets are included.
 
 ## Contributors
 
-- **Brandon Thoreau Kelly**: project owner and maintainer (product direction, architecture decisions, review and
-  approval of each milestone)
+- **Brandon Kelly (bthoreau88)**: project owner and maintainer (product direction, architecture decisions, review
+  and approval of each milestone). The idea began as a prototype in Project & Portfolio IV (COS349); this codebase
+  was rebuilt in October 2026 and continued independently for Software Architecture (SDV4327-O).
 - **AI assistance:** development used AI coding assistants under the owner's direction. Commit history records the
   authoring tool for each change.
 - **Instructor:** Jason Hinders (Software Architecture, Full Sail University)
 
 ## Project status
 
-**Alpha, not deployed.** The core journey works in automated tests: choose a question → record → review feedback →
-save → reopen from History → delete.
+**Beta, not deployed.** The core journey works in automated tests: choose a question → record → type or choose a
+transcript → review feedback → save → reopen from History → delete. 62 unit/contract/architecture tests and 36
+browser tests pass (see [`docs/submission/TEST_REPORT.md`](docs/submission/TEST_REPORT.md)).
 
 Known issues and gaps (October 2026):
 
@@ -140,12 +142,3 @@ Known issues and gaps (October 2026):
 1. Real-microphone and Windows testing.
 2. Server API for saved sessions, if required by the course.
 3. Recorded walkthrough.
-
-License
-MIT — see details here if needed; free to use, modify, and learn from.
-
-Contributors
-Brandon Kelly (bthoreau88) — sole developer. Built originally for Project & Portfolio IV (COS349), continued independently for Software Architecture (SDV4327-O).
-
-Project Status
-Beta. Core flow (record → transcribe → feedback → save → review history) is complete and tested (33/33 passing). Actively extending: richer speech-to-text integration and an expanded prompt library are in progress.

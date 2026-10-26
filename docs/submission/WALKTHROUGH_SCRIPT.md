@@ -5,7 +5,7 @@ Times are cumulative. Rehearse once with a real microphone before recording.
 
 ## Before you record
 
-- Run `npm run dev` in `projects/intervieworbit` and open `http://localhost:5173` in Chrome or Edge.
+- Run `npm run dev` in the repository folder and open `http://localhost:5173` in Chrome or Edge.
 - Clear old data: DevTools → Application → Storage → Clear site data. History must start empty.
 - Reset the microphone permission for localhost so the browser prompt appears on camera.
 - Have the repository open in a second window at `docs/architecture/diagrams/02-containers-components.png`.

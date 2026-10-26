@@ -1,7 +1,6 @@
 # ADR-001: Layered client with a persistence port; browser-local storage for P0
 
-Scope: Interview Orbit only. These ADR numbers are local to `projects/intervieworbit` and are not part of the
-OVS-OS root decision register (`decisions/`).
+Scope: Interview Orbit only (project-local ADR numbering).
 
 - **Status:** Implemented (G01–G02). Awaiting owner review. Not instructor-reviewed.
 - **Date:** 2026-10-16
@@ -31,7 +30,7 @@ Forces:
    The UI receives an implementation through `SessionRepositoryProvider` (`src/state/SessionRepository.tsx:7`)
    and never imports an adapter.
 3. Ship one production adapter, `IndexedDbSessionRepository`, that reports success only after the transaction
-   commits and the record reads back (`src/persistence/indexedDbSessionRepository.ts:86-96`).
+   commits and the record reads back (`src/persistence/indexedDbSessionRepository.ts:87-97`).
 4. Label the storage in the UI as browser-local ("Saved in this browser only … Not on a server").
 5. Keep the proposed HTTP API as a written contract ([DATA_CONTRACT.md §4](../DATA_CONTRACT.md#4-proposed-http-api-not-implemented))
    so that a server adapter can be added without touching the UI or domain.
