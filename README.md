@@ -93,6 +93,7 @@ Architecture documents: [overview and diagrams](docs/architecture/ARCHITECTURE.m
 [ADR-002](docs/architecture/adr/ADR-002-transcript-provenance.md) (honest transcript sources),
 [ADR-003](docs/architecture/adr/ADR-003-accessible-liquid-material.md) (accessible glass design).
 The layering rules are enforced by `src/architecture.test.ts`, which runs with `npm test`.
+[Quality attribute traceability](docs/architecture/QUALITY_TRACEABILITY.md) maps each requirement to its code and tests.
 
 ### How the feedback is calculated
 

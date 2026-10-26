@@ -6,7 +6,7 @@ V002 planning PDF proposed something different, the difference is stated in [Pla
 
 Related: [ADR-001](adr/ADR-001-client-modules-and-persistence-port.md) ·
 [ADR-002](adr/ADR-002-transcript-provenance.md) · [ADR-003](adr/ADR-003-accessible-liquid-material.md) ·
-[Data contract](DATA_CONTRACT.md) · rendered diagrams in [`diagrams/`](diagrams/).
+[Data contract](DATA_CONTRACT.md) · [Quality traceability](QUALITY_TRACEABILITY.md) · rendered diagrams in [`diagrams/`](diagrams/).
 
 ## 1. System context
 
@@ -76,7 +76,7 @@ storage, or browser media APIs. This is enforced by `src/architecture.test.ts`, 
 | Analyzer | `src/domain/analyzer.ts:98` | Pure function, version `io-analyzer/1` (`:11`) |
 | Session factory + validation | `src/domain/sessionFactory.ts:11,38,55` | Builds records without audio; validates records read back |
 | Persistence port | `src/domain/sessionRepository.ts:8` | `save`, `list`, `get`, `remove`; typed `StorageError` (`:22`) |
-| IndexedDB adapter | `src/persistence/indexedDbSessionRepository.ts:13` | Commit-then-read-back save (`:86-96`) |
+| IndexedDB adapter | `src/persistence/indexedDbSessionRepository.ts:13` | Commit-then-read-back save (`:87-97`) |
 | In-memory adapter | `src/persistence/inMemorySessionRepository.ts:6` | Tests; simulated failures |
 | Recorder state machine | `src/recorder/recorderState.ts:23` | Pure reducer: unsupported / idle / requesting / recording / stopped / error |
 | Recorder adapter | `src/recorder/useRecorder.ts:20` | Only place that opens the microphone (`:53`) |
@@ -186,7 +186,7 @@ existing `interview-orbit-prototype.netlify.app` site is a different, earlier up
 
 | Scenario | Mechanism | Evidence |
 |---|---|---|
-| Reliability: no fake "Saved" | Save resolves after commit + read-back; errors surface | `indexedDbSessionRepository.ts:86-96`; e2e `AT-13` |
+| Reliability: no fake "Saved" | Save resolves after commit + read-back; errors surface | `indexedDbSessionRepository.ts:87-97`; e2e `AT-13` |
 | Security: no client secrets; bounded input | No env vars or network code; transcript capped at 20,000 chars | `architecture.test.ts` (no network); `sessionFactory.ts:5` |
 | Privacy: consent, retention, delete | Mic opens only in `start()`; audio memory-only; delete removes record | `useRecorder.ts:53`; e2e `AT-02/03/18`, `AT-09..12` |
 | Maintainability: provider isolation | Persistence port + adapters; transcript source enum | ADR-001, ADR-002; contract tests |
