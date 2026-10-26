@@ -1,7 +1,6 @@
 # ADR-001: Layered client with a persistence port; browser-local storage for P0
 
-Scope: Interview Orbit only. These ADR numbers are local to `projects/intervieworbit` and are not part of the
-OVS-OS root decision register (`decisions/`).
+Scope: Interview Orbit only (project-local ADR numbering).
 
 - **Status:** Implemented (G01–G02). Awaiting owner review. Not instructor-reviewed.
 - **Date:** 2026-10-16
