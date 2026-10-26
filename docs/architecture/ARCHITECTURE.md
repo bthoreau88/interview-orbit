@@ -1,7 +1,7 @@
 # Interview Orbit: Architecture (as built)
 
-Version: IO-07 V001, 2026-10-16. Describes the code on branch `claude/enhance-io07-interview-orbit-architecture`
-(built on G02 `d5bfebd`). Every box and arrow below maps to a file listed in the tables. Where the
+Version: IO-07 V001, 2026-10-16. Describes the code in `github.com/bthoreau88/interview-orbit`. The IO-10 recorder fix
+(commit `bcc98f6`, 2026-10-25) added a cancellation guard to `useRecorder.ts`; line references are current. Every box and arrow below maps to a file listed in the tables. Where the
 V002 planning PDF proposed something different, the difference is stated in [Plan vs. built](#plan-vs-built).
 
 Related: [ADR-001](adr/ADR-001-client-modules-and-persistence-port.md) ·
@@ -79,7 +79,7 @@ storage, or browser media APIs. This is enforced by `src/architecture.test.ts`, 
 | IndexedDB adapter | `src/persistence/indexedDbSessionRepository.ts:13` | Commit-then-read-back save (`:86-96`) |
 | In-memory adapter | `src/persistence/inMemorySessionRepository.ts:6` | Tests; simulated failures |
 | Recorder state machine | `src/recorder/recorderState.ts:23` | Pure reducer: unsupported / idle / requesting / recording / stopped / error |
-| Recorder adapter | `src/recorder/useRecorder.ts:20` | Only place that opens the microphone (`:45`) |
+| Recorder adapter | `src/recorder/useRecorder.ts:20` | Only place that opens the microphone (`:53`) |
 | Draft session | `src/state/DraftSession.tsx:26` | In-memory attempt; owns the audio Blob URL lifecycle |
 | Repository provider | `src/state/SessionRepository.tsx:7` | Injects the adapter (IndexedDB by default) |
 
@@ -188,7 +188,7 @@ existing `interview-orbit-prototype.netlify.app` site is a different, earlier up
 |---|---|---|
 | Reliability: no fake "Saved" | Save resolves after commit + read-back; errors surface | `indexedDbSessionRepository.ts:86-96`; e2e `AT-13` |
 | Security: no client secrets; bounded input | No env vars or network code; transcript capped at 20,000 chars | `architecture.test.ts` (no network); `sessionFactory.ts:5` |
-| Privacy: consent, retention, delete | Mic opens only in `start()`; audio memory-only; delete removes record | `useRecorder.ts:45`; e2e `AT-02/03/18`, `AT-09..12` |
+| Privacy: consent, retention, delete | Mic opens only in `start()`; audio memory-only; delete removes record | `useRecorder.ts:53`; e2e `AT-02/03/18`, `AT-09..12` |
 | Maintainability: provider isolation | Persistence port + adapters; transcript source enum | ADR-001, ADR-002; contract tests |
 | Portability: Chrome/Edge, mobile width | Feature detection + unsupported path; 360px tests | `useRecorder.ts:7`; e2e mobile-360 project |
 
