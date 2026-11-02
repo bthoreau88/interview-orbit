@@ -4,7 +4,8 @@ Tracks every checkbox in the V002 planning PDF against repository evidence.
 Last updated 2026-10-16. Statuses: **Done**, **Done with limits**, **Partial**, **Not started**, **Blocked**.
 A box is Done only with evidence in this repository (rule from `P0_IMPLEMENTATION_CHECKLIST.md`).
 
-Branch chain: `claude/enhance-io01-…` → `io02` → `io07` → `io09` (this). None merged; no PRs open.
+Repository: `github.com/bthoreau88/interview-orbit` (public, `main`). Developed Oct 16–20 inside a private
+repository and exported here with its commit history on Oct 25.
 
 ## Hard project gates (PDF p. 2)
 
