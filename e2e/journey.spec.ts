@@ -18,9 +18,13 @@ function trackRequests(page: Page) {
 async function recordFor(page: Page, seconds: number) {
   await page.getByRole("button", { name: "Start recording" }).click();
   await expect(page.getByText("Recording - microphone on")).toBeVisible();
-  await expect(page.getByTestId("timer")).toHaveText(`00:${String(seconds).padStart(2, "0")}`, {
-    timeout: (seconds + 3) * 1000,
-  });
+  // Wait until at least `seconds` have elapsed. The display can skip a second under load (00:00 -> 00:02),
+  // so an exact-text match was flaky when tests ran in parallel.
+  await expect
+    .poll(async () => Number((await page.getByTestId("timer").innerText()).split(":")[1]), {
+      timeout: (seconds + 3) * 1000,
+    })
+    .toBeGreaterThanOrEqual(seconds);
   await page.getByRole("button", { name: "Stop recording" }).click();
   await expect(page.getByText(/Recording captured/)).toBeVisible();
 }
@@ -90,7 +94,50 @@ test("AT-06 demo transcript is conspicuously labeled and never gets a pace", asy
   await expect(page.getByTestId("demo-warning")).toContainText("DEMO / SAMPLE - NOT TRANSCRIBED FROM THIS RECORDING");
   await expect(page.getByTestId("source-badge")).toContainText("DEMO / SAMPLE");
   await expect(page.getByTestId("metric-pace")).toContainText("Demo text is not synchronized");
-  await expect(page.getByRole("radio", { name: /Live transcription - unavailable/ })).toBeDisabled();
+  await expect(page.getByRole("radio", { name: /Transcribe my recording/ })).toBeEnabled();
+});
+
+test("BTHOR-6 live transcript: LIVE badge, fillers highlighted, edited text is what gets analyzed", async ({ page }) => {
+  let uploads = 0;
+  await page.route("**/api/transcriptions", async (route) => {
+    uploads += 1;
+    expect(route.request().method()).toBe("POST");
+    await route.fulfill({
+      json: { text: "I, um, planned the sprint and, uh, split the work into three tickets.", words: [], source: "live" },
+    });
+  });
+
+  await page.goto("/record/team-conflict");
+  await recordFor(page, 2);
+  await page.getByRole("button", { name: "Use this answer" }).click();
+  expect(uploads).toBe(0); // nothing leaves the browser until the user chooses to transcribe
+
+  await page.getByRole("radio", { name: /Transcribe my recording/ }).click();
+  await expect(page.getByTestId("source-badge")).toContainText("Live transcription");
+  await expect(page.getByTestId("filler-mark")).toHaveText(["um,", "uh,"]);
+  expect(uploads).toBe(1);
+  await expect(page.getByTestId("metric-fillers")).toContainText("um 1, uh 1");
+
+  // Correcting a mis-heard word changes exactly what the analyzer receives.
+  await page.getByLabel("Correct the transcript").fill("I, um, planned the sprint and split the work into three tickets.");
+  await expect(page.getByTestId("metric-fillers")).toContainText("um 1");
+  await expect(page.getByTestId("metric-fillers")).not.toContainText("uh");
+  await expect(page.getByTestId("filler-mark")).toHaveCount(1);
+});
+
+test("BTHOR-6 transcription failure offers retry and manual entry, never a false transcript", async ({ page }) => {
+  await page.route("**/api/transcriptions", (route) => route.fulfill({ status: 502, json: { title: "down" } }));
+
+  await page.goto("/record/team-conflict");
+  await recordFor(page, 1);
+  await page.getByRole("button", { name: "Use this answer" }).click();
+  await page.getByRole("radio", { name: /Transcribe my recording/ }).click();
+
+  await expect(page.getByTestId("live-error")).toContainText("Transcription is unavailable right now.");
+  await expect(page.getByTestId("source-badge")).toContainText("No transcript");
+  await page.getByRole("button", { name: "Type it instead" }).click();
+  await expect(page.getByLabel("Your answer, as you said it")).toBeVisible();
+  await expect(page.getByTestId("source-badge")).toContainText("Manual");
 });
 
 test("AT-05 retry discards the recording and returns to consent", async ({ page }) => {

@@ -561,3 +561,18 @@ details summary {
 .recent-link .eyebrow {
   margin: 0;
 }
+
+/* ---------- Transcript review (BTHOR-6) ---------- */
+.transcript-highlight {
+  white-space: pre-wrap;
+  background: #ffffff;
+  border: 1px solid rgba(17, 25, 44, 0.1);
+  border-radius: var(--io-radius-sm);
+  padding: var(--io-space-3) var(--io-space-4);
+}
+.transcript-highlight mark {
+  background: var(--io-warning-bg);
+  color: var(--io-warning-ink);
+  border-radius: 4px;
+  padding: 0 2px;
+}
