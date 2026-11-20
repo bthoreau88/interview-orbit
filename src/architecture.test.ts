@@ -63,10 +63,18 @@ describe("ADR-001 dependency rules", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("no source file performs network I/O (no fetch, XHR, WebSocket, sendBeacon)", () => {
+  it("only the transcription adapter performs network I/O (no fetch, XHR, WebSocket, sendBeacon elsewhere)", () => {
     const offenders = sourceFiles(SRC)
+      .filter((f) => rel(f) !== "transcription/liveTranscriber.ts")
       .filter((f) => /\bfetch\(|XMLHttpRequest|new WebSocket|sendBeacon/.test(readFileSync(f, "utf8")))
       .map((f) => rel(f));
     expect(offenders).toEqual([]);
+  });
+
+  it("the transcription adapter depends only on domain", () => {
+    const violations = layerFiles("transcription").flatMap(({ file, imports }) =>
+      imports.filter((i) => i.startsWith("../") && !i.startsWith("../domain/")).map((i) => `${file} -> ${i}`),
+    );
+    expect(violations).toEqual([]);
   });
 });

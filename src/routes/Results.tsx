@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { FeedbackView } from "../components/FeedbackView";
 import { Page } from "../components/Page";
 import { SourceBadge } from "../components/SourceBadge";
+import { TranscriptHighlight } from "../components/TranscriptHighlight";
 import { analyze } from "../domain/analyzer";
 import { DEMO_TRANSCRIPT } from "../domain/demoTranscript";
 import { findPrompt } from "../domain/prompts";
@@ -12,13 +13,16 @@ import { storageErrorMessage } from "../domain/sessionRepository";
 import { formatClock } from "../recorder/recorderState";
 import { useDraftSession } from "../state/DraftSession";
 import { newSessionId, useSessionRepository } from "../state/SessionRepository";
+import { TranscriptionError, transcribeRecording } from "../transcription/liveTranscriber";
 
 type SaveState = { phase: "idle" } | { phase: "saving" } | { phase: "error"; message: string };
+type LiveState = { phase: "idle" } | { phase: "working" } | { phase: "error"; message: string };
 
 export function Results() {
   const { draft, setTranscript, markSaved } = useDraftSession();
   const repository = useSessionRepository();
   const [save, setSave] = useState<SaveState>({ phase: "idle" });
+  const [live, setLive] = useState<LiveState>({ phase: "idle" });
   const prompt = findPrompt(draft?.promptId);
 
   const analysis = useMemo(
@@ -56,8 +60,23 @@ export function Results() {
   const savedId = draft.savedId;
   const locked = save.phase === "saving" || savedId !== undefined;
   const { source, text } = draft.transcript;
+  const recording = draft.recording;
+  const runLiveTranscription = async () => {
+    if (!recording) return;
+    setLive({ phase: "working" });
+    try {
+      const result = await transcribeRecording(recording);
+      setTranscript({ source: "live", text: result.text });
+      setLive({ phase: "idle" });
+    } catch (error) {
+      const message = error instanceof TranscriptionError ? error.message : "Transcription failed.";
+      setLive({ phase: "error", message });
+    }
+  };
   const chooseSource = (next: TranscriptSource) => {
-    if (next === "demo") setTranscript({ source: "demo", text: DEMO_TRANSCRIPT });
+    if (next !== "live") setLive({ phase: "idle" });
+    if (next === "live") void runLiveTranscription();
+    else if (next === "demo") setTranscript({ source: "demo", text: DEMO_TRANSCRIPT });
     else if (next === "manual") setTranscript({ source: "manual", text: source === "manual" ? text : "" });
     else setTranscript({ source: "none", text: "" });
   };
@@ -112,14 +131,22 @@ export function Results() {
           <legend className="muted" style={{ marginBottom: 8 }}>
             Where should the text come from?
           </legend>
-          <label className="source-option" data-disabled="true">
-            <input type="radio" name="source" disabled aria-describedby="live-why" />
+          <label className="source-option" data-disabled={recording ? undefined : "true"}>
+            <input
+              type="radio"
+              name="source"
+              checked={source === "live"}
+              disabled={!recording || live.phase === "working"}
+              onChange={() => chooseSource("live")}
+              aria-describedby="live-why"
+            />
             <span>
-              <strong>Live transcription - unavailable</strong>
+              <strong>Transcribe my recording</strong>
               <br />
               <span className="muted" id="live-why">
-                No speech-to-text provider is connected in this build. Browser speech services can send audio to a third
-                party, so they are off by design.
+                {recording
+                  ? "Sends this recording to the speech-to-text service with filler words kept. The audio is not stored."
+                  : "Needs a recording. Use one of the options below instead."}
               </span>
             </span>
           </label>
@@ -148,6 +175,47 @@ export function Results() {
         </fieldset>
 
         <SourceBadge source={source} />
+
+        <div aria-live="polite">
+          {live.phase === "working" && (
+            <div className="notice notice-info" role="status" data-testid="live-working">
+              <strong>Transcribing your recording…</strong>
+              This usually takes a few seconds.
+            </div>
+          )}
+          {live.phase === "error" && (
+            <div className="notice notice-warning" role="alert" data-testid="live-error">
+              <strong>Transcription did not work</strong>
+              {live.message} You can try again, or type what you said (marked Manual).
+              <div className="btn-row">
+                <button type="button" className="btn btn-secondary" onClick={() => void runLiveTranscription()}>
+                  Try again
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => chooseSource("manual")}>
+                  Type it instead
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {source === "live" && (
+          <div>
+            <p className="muted" style={{ marginBottom: 8 }}>
+              Filler words are highlighted. Correct any word the service mis-heard; the edited text is what gets analyzed.
+            </p>
+            <TranscriptHighlight text={text} />
+            <label htmlFor="live-text" style={{ fontWeight: 600, display: "block", margin: "12px 0 8px" }}>
+              Correct the transcript
+            </label>
+            <textarea
+              id="live-text"
+              value={text}
+              readOnly={locked}
+              onChange={(e) => setTranscript({ source: "live", text: e.target.value })}
+            />
+          </div>
+        )}
 
         {source === "demo" && (
           <div className="notice notice-warning" role="note" data-testid="demo-warning">
