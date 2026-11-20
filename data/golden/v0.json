@@ -1,0 +1,391 @@
+{
+  "version": "golden/v0",
+  "status": "Labeled by hand before any model is run. Ground truth for the AI evaluation plan (SDD v1.0 section 5.2).",
+  "rubrics": {
+    "star": [
+      "relevance",
+      "situation",
+      "task",
+      "action",
+      "result"
+    ],
+    "technical": [
+      "relevance",
+      "restates_problem",
+      "approach",
+      "tradeoff",
+      "example_or_verification"
+    ]
+  },
+  "statuses": [
+    "present",
+    "partial",
+    "missing"
+  ],
+  "answers": [
+    {
+      "id": "g0-01",
+      "promptId": "team-conflict",
+      "category": "Teamwork",
+      "rubric": "star",
+      "qualityType": "strong",
+      "text": "On a class project last spring, a teammate and I disagreed about whether to build the login screen first or the core feature. Our deadline was two weeks out and I was responsible for the frontend. I suggested we each write down what would block the other person, and it turned out the login screen blocked nobody. We built the core feature first, I mocked the login, and we demoed a working prototype three days early.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "present",
+          "result": "present"
+        },
+        "deliveryNote": "Clean delivery; all STAR parts with a measurable result."
+      }
+    },
+    {
+      "id": "g0-02",
+      "promptId": "team-conflict",
+      "category": "Teamwork",
+      "rubric": "star",
+      "qualityType": "weak",
+      "text": "I had a disagreement with a teammate once about priorities. We talked about it and figured it out. Communication is really important and I always try to listen. In the end things worked out fine and the project went well.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "partial",
+          "task": "missing",
+          "action": "partial",
+          "result": "partial"
+        },
+        "deliveryNote": "Vague: no specific situation, no clear action, no concrete result."
+      }
+    },
+    {
+      "id": "g0-03",
+      "promptId": "team-conflict",
+      "category": "Teamwork",
+      "rubric": "star",
+      "qualityType": "incomplete",
+      "text": "At my warehouse job two coworkers kept arguing about who should restock the front aisle during rush. As the shift lead it was my job to sort it out, so I set up a rotation chart and posted it in the break room so everyone could see whose turn it was.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "present",
+          "result": "missing"
+        },
+        "deliveryNote": "Result is missing: never says whether the rotation worked."
+      }
+    },
+    {
+      "id": "g0-04",
+      "promptId": "team-conflict",
+      "category": "Teamwork",
+      "rubric": "star",
+      "qualityType": "irrelevant",
+      "text": "I'm really organized. I use a planner every day and color-code my tasks, and I like to finish assignments early so I have time to review them. My teachers have always said I'm dependable and I take deadlines seriously.",
+      "expected": {
+        "criteria": {
+          "relevance": "missing",
+          "situation": "missing",
+          "task": "missing",
+          "action": "missing",
+          "result": "missing"
+        },
+        "deliveryNote": "Fluent but answers a different question (strengths, not a conflict)."
+      }
+    },
+    {
+      "id": "g0-05",
+      "promptId": "prob-deadline",
+      "category": "Problem solving",
+      "rubric": "star",
+      "qualityType": "strong",
+      "text": "Two days before a client demo at my internship, the payment page started failing in testing. I owned that page. I split the bug into three checks, network, data, and UI, and found an expired test API key in under an hour. I fixed it, added a startup check that warns when a key is near expiry, and the demo went out on time with zero payment errors.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "present",
+          "result": "present"
+        },
+        "deliveryNote": "Strong, specific, measurable."
+      }
+    },
+    {
+      "id": "g0-06",
+      "promptId": "prob-deadline",
+      "category": "Problem solving",
+      "rubric": "star",
+      "qualityType": "weak",
+      "text": "I've had a lot of tight deadlines. Usually I just work harder and stay focused. I think staying calm is the key. I got everything done in the end.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "missing",
+          "task": "missing",
+          "action": "partial",
+          "result": "partial"
+        },
+        "deliveryNote": "Generic; no single situation."
+      }
+    },
+    {
+      "id": "g0-07",
+      "promptId": "prob-deadline",
+      "category": "Problem solving",
+      "rubric": "star",
+      "qualityType": "incomplete",
+      "text": "In my networking class we had a lab due in 24 hours and our router config kept dropping packets. I was the one assigned the routing table, and I went line by line through it.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "partial",
+          "result": "missing"
+        },
+        "deliveryNote": "Action only partly described; no result."
+      }
+    },
+    {
+      "id": "g0-08",
+      "promptId": "prob-deadline",
+      "category": "Problem solving",
+      "rubric": "star",
+      "qualityType": "irrelevant",
+      "text": "I'd say my biggest weakness is that I'm a perfectionist. I like things to be just right, so sometimes I spend extra time polishing. I'm working on it by setting time limits for myself.",
+      "expected": {
+        "criteria": {
+          "relevance": "missing",
+          "situation": "missing",
+          "task": "missing",
+          "action": "missing",
+          "result": "missing"
+        },
+        "deliveryNote": "Off-topic (weakness question)."
+      }
+    },
+    {
+      "id": "g0-09",
+      "promptId": "tech-debug-prod",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "strong",
+      "text": "So the bug only happens in production. First I'd confirm what's different there: data volume, configuration, and traffic. I'd pull the logs and error traces for the failing requests and try to reproduce with production-like data in staging. The trade-off is speed versus safety: adding more logging in production is fast but can expose user data, so I'd log ids, not content. Once I can reproduce it, I'd write a failing test first, then fix it.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "present",
+          "approach": "present",
+          "tradeoff": "present",
+          "example_or_verification": "present"
+        },
+        "deliveryNote": "Covers all technical criteria."
+      }
+    },
+    {
+      "id": "g0-10",
+      "promptId": "tech-debug-prod",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "weak",
+      "text": "I'd look at the code and try to find the problem. Debugging is something I'm good at. I would probably use print statements until I find it and then fix it.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "missing",
+          "approach": "partial",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "Shallow approach, no trade-off, no verification."
+      }
+    },
+    {
+      "id": "g0-11",
+      "promptId": "tech-debug-prod",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "incomplete",
+      "text": "I'd start by checking the production logs and comparing the configuration between staging and production, because that's usually where differences hide. Then I'd try to reproduce it locally.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "partial",
+          "approach": "present",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "Approach present; no trade-off, no way to verify the fix."
+      }
+    },
+    {
+      "id": "g0-12",
+      "promptId": "tech-debug-prod",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "irrelevant",
+      "text": "In my last project I really enjoyed working with React. It has hooks and a big community, and I like how fast you can build interfaces with it.",
+      "expected": {
+        "criteria": {
+          "relevance": "missing",
+          "restates_problem": "missing",
+          "approach": "missing",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "Talks about a framework preference instead of debugging."
+      }
+    },
+    {
+      "id": "g0-13",
+      "promptId": "tech-api-design",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "strong",
+      "text": "You want an API for saving practice sessions. I'd use REST: POST to create, GET to list newest first, DELETE by id, and every request checks that the user owns the record. The main trade-off is validating on the server even though the client already validates, which is duplicated work but stops bad data. I'd prove it with integration tests, including one that tries to read another user's session and expects a 404.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "present",
+          "approach": "present",
+          "tradeoff": "present",
+          "example_or_verification": "present"
+        },
+        "deliveryNote": "All criteria; concrete verification."
+      }
+    },
+    {
+      "id": "g0-14",
+      "promptId": "tech-api-design",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "weak",
+      "text": "I would make some endpoints for the sessions and connect them to a database. Then the frontend can call them. It should be pretty straightforward.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "missing",
+          "approach": "partial",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "Vague."
+      }
+    },
+    {
+      "id": "g0-15",
+      "promptId": "tech-api-design",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "incomplete",
+      "text": "So the goal is storing sessions per user. I'd make POST, GET and DELETE endpoints and store everything in PostgreSQL through an ORM.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "restates_problem": "present",
+          "approach": "present",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "No trade-off or testing."
+      }
+    },
+    {
+      "id": "g0-16",
+      "promptId": "tech-api-design",
+      "category": "Technical",
+      "rubric": "technical",
+      "qualityType": "irrelevant",
+      "text": "I think the most important thing on a team is communication. I always make sure to update my team in standups and ask questions early.",
+      "expected": {
+        "criteria": {
+          "relevance": "missing",
+          "restates_problem": "missing",
+          "approach": "missing",
+          "tradeoff": "missing",
+          "example_or_verification": "missing"
+        },
+        "deliveryNote": "Behavioral content for a technical question."
+      }
+    },
+    {
+      "id": "g0-17",
+      "promptId": "prob-deadline",
+      "category": "Problem solving",
+      "rubric": "star",
+      "qualityType": "polished-off-topic",
+      "text": "I'm passionate about software because it lets me build things people actually use. I've taught myself several frameworks, I keep a development blog, and I'm always looking for ways to grow as an engineer. I believe consistency and curiosity are what make a great developer.",
+      "expected": {
+        "criteria": {
+          "relevance": "missing",
+          "situation": "missing",
+          "task": "missing",
+          "action": "missing",
+          "result": "missing"
+        },
+        "deliveryNote": "PATRICK CASE A. Delivery layer: clean (few or no fillers, pace in range). Answer-quality layer: Relevance missing, so all STAR criteria missing. Expected outcome: good MEASURED numbers + AI ASSESSMENT flags it as not answering the question."
+      }
+    },
+    {
+      "id": "g0-18",
+      "promptId": "lead-initiative",
+      "category": "Leadership",
+      "rubric": "star",
+      "qualityType": "relevant-filler-heavy",
+      "text": "Um, so, at my, uh, last job, um, our inventory counts were, like, always off by the end of the week. Uh, nobody owned it, so, um, I decided to, uh, build a quick spreadsheet that, um, flagged mismatches every night. I, uh, showed it to my manager, and, um, within a month the, uh, counting errors dropped from, like, about twenty a week to, um, three.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "present",
+          "result": "present"
+        },
+        "deliveryNote": "PATRICK CASE B. Delivery layer: very high filler rate (>15 per 100 words), so a GUIDELINE tip fires. Answer-quality layer: every STAR criterion present with a measurable result. Expected outcome: weak MEASURED delivery + strong AI ASSESSMENT. The two layers disagree by design."
+      }
+    },
+    {
+      "id": "g0-19",
+      "promptId": "lead-initiative",
+      "category": "Leadership",
+      "rubric": "star",
+      "qualityType": "strong",
+      "text": "Our club's sign-up sheet kept losing names. I wasn't an officer, but I offered to move it to a simple online form. I built it over a weekend, trained two officers to use it, and the next event had 40 sign-ups with none lost.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "present",
+          "result": "present"
+        },
+        "deliveryNote": "Strong."
+      }
+    },
+    {
+      "id": "g0-20",
+      "promptId": "lead-initiative",
+      "category": "Leadership",
+      "rubric": "star",
+      "qualityType": "incomplete",
+      "text": "I noticed our team's documentation was out of date, so I volunteered to rewrite the setup guide for new members.",
+      "expected": {
+        "criteria": {
+          "relevance": "present",
+          "situation": "present",
+          "task": "present",
+          "action": "partial",
+          "result": "missing"
+        },
+        "deliveryNote": "Action thin, no result."
+      }
+    }
+  ],
+  "plannedPromptIds": [
+    "tech-debug-prod",
+    "tech-api-design"
+  ]
+}
