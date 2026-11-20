@@ -1,0 +1,31 @@
+name: CI
+
+# Runs on every pull request and on pushes to the shared branches (BTHOR-4).
+on:
+  pull_request:
+  push:
+    branches: [development, main]
+
+jobs:
+  frontend:
+    name: Frontend (typecheck + unit tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  api:
+    name: API (dotnet test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: api/global.json
+      - run: dotnet test api/InterviewOrbit.sln
